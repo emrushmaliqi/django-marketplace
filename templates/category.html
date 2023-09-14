@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block title %} Marketplace | {{ category.name }} {% endblock %}
+
+{% block content %}
+    <h1 class="mt-3">{{category.name}}</h1>
+
+    <div class="d-flex gap-4 flex-wrap my-5">
+        {% for listing in listings %}
+        <div class="card" style="width: 19.1rem;">
+            <img src="{% if listing.images.first %} {{listing.images.first.url.url}} {% else %} https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREabvR30BJaXiYN2Azwc8fPUWJmv1nzMatw9YIxxrygA&s {% endif %}" class="card-img-top object-fit-cover" style="aspect-ratio: 1 / 1 ;" alt="{{listing.title}} image">
+            <div class="card-body">
+              <h5 class="card-title">{{ listing.title|truncatechars:26 }}</h5>
+              <p class="card-text">${{ listing.price|floatformat:2 }}</p>
+                <a href="#" class="btn btn-primary">View listing</a>
+                <a href="#" class="btn btn-outline-primary">Message</a>
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+    
+{% endblock %}
