@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 # Create your models here.
 
@@ -13,10 +14,13 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Listing(models.Model):
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['is_sold', '-created_at']
     title = models.CharField(max_length=40)
     description = models.CharField(max_length=1000)
     price = models.FloatField()
@@ -33,3 +37,6 @@ class ListingImage(models.Model):
     url = models.ImageField(upload_to='listing_images/')
     listing = models.ForeignKey(
         Listing, on_delete=models.CASCADE, related_name='images')
+
+    def get_absolute_url(self):
+        return settings.MEDIA_URL + str(self.url)

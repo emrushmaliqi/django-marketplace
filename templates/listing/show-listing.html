@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block title %} Marketplace | Listing {% endblock %}
+
+{% block content %} 
+<div class="d-flex justify-content-between my-4">
+    <div style="width:500px;">
+      {% if listing.images.all|length %}
+      <div id="imagesCarousel" class="carousel slide">
+        <div class="carousel-indicators">
+          {% for image in listing.images.all %}
+          <button type="button" data-bs-target="#imagesCarousel" data-bs-slide-to="{{forloop.counter0}}" {% if forloop.counter == 1 %} class="active" aria-current="true" {% endif %} aria-label="Slide {{forloop.counter}}"></button>
+    
+          {% endfor %}
+        </div>
+          <div class="carousel-inner">
+            {% for image in images %}
+            <div class="carousel-item {% if forloop.counter == 1 %} active {% endif %}">
+              <img src="{{image.url.url}}" class="d-block"  style="width: 500px; aspect-ratio: 1/1; object-fit: cover;" alt="{{ listing.title }} image">
+            </div>
+            {% endfor %}
+          </div>
+          {% if listing.images.all|length > 1 %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#imagesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#imagesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          {% endif %}
+        </div>
+      {% else %}
+      <img src="https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg" width="500">
+
+      {% endif %}
+    </div>
+      <div style="width: 750px;">
+        <h1>{{listing.title}}</h1>
+  
+      <div class="d-flex justify-content-between align-items-center pe-5 py-2 border-top border-bottom">
+        <h4 class="m-0">
+          {{listing.user.get_full_name}}
+      </h4>
+      {% if listing.user.id == request.user.id %}
+        <div>
+          <a href="{% url 'edit-listing' listing.id %}" class="btn btn-primary">Edit listing</a>
+          <a href="{% url 'delete-listing' listing.id %}" class="btn btn-danger">Delete listing</a>
+        </div>
+      {% else %}
+      {% if listing.is_sold %}
+      <span>Sold</span>
+      {% else %}
+      <a href="{% url 'message-buy' listing.id %}" class="btn btn-primary">Message</a>
+      {% endif %}
+      {% endif %}
+      </div>
+      <div class="mt-2">
+        <h5>Price: <span class="fw-normal">${{listing.price|floatformat:2}}</span></h5>
+      </div>
+      <div class="mt-2">
+        <h5>Category: <a href="{% url 'category' listing.category.slug %}" class="fw-normal">{{listing.category.name}}</a></h5>
+      </div>
+      <div class="mt-2\">
+        <h5 class="mb-1">Description</h5>
+        <p>{{listing.description|linebreaks}}</p>
+      </div>
+      </div>
+</div>
+{% endblock %}

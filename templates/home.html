@@ -1,19 +1,32 @@
 {% extends 'layout.html' %}
 {% block title %} Marketplace | Home {% endblock %}
+{% load query_filters %}
 
 {% block content %}
 
-asknfkjaskjfkabfjbakjfb 
-
-
 <div>
 {% for category in categories %}
-    <div>
-        <h3>{{category.name}}</h3>
-        {% for listing in category.listings.all|slice:":10" %}
-            <h5>{{ listing.title}}</h5>
-        {% endfor %}
-    </div>
+    {% if category.listings|others_sold:request.user.id|length %}
+        <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="my-0"><a class="text-decoration-none text-black" href="{% url 'category' category.slug %}">{{category.name}}</a></h3>
+                <a class="btn btn-primary" href="{% url 'category' category.slug %}">See all</a>
+            </div>
+            <div class="d-flex gap-4 mt-2">
+                {% for listing in category.listings|others_sold:request.user.id|slice:":5" %}
+                <div class="card" style="width: 15rem; min-width: 15rem;">
+                    <img src="{% if listing.images.first %} {{listing.images.first.url.url}} {% else %} https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg {% endif %}" class="card-img-top object-fit-cover" style="aspect-ratio: 1 / 1 ;" alt="{{listing.title}} image">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ listing.title|truncatechars:20 }}</h5>
+                      <p class="card-text">${{ listing.price|floatformat:2 }}</p>
+                        <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View listing</a>
+                        <a href="{% url 'message-buy' listing.id %}" class="btn btn-outline-primary">Message</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endfor %}
 </div>
 {% endblock %}

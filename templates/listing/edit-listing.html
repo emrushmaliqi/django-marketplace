@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block title %} Marketplace | Create listing {% endblock %}
+
+{% block content %} 
+<form action="{% url 'edit-listing' listing.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <div class="form-group mb-3">
+        <label for="images">Images:</label>
+        <input type="file" id="images" name="images" multiple class="form-control" />
+    </div>
+    <button class="btn btn-primary">Save</button>
+</form>
+    {% if listing.images.all|length %}
+        <h3 class="mt-3">Select images to be deleted</h3>
+        <div class="d-flex gap-3 flex-wrap mb-5" id="imagesDiv">
+            {% for image in listing.images.all %}
+                <img src="{{image.get_absolute_url}}" class="border-danger border-4 rounded" style="width:240px; aspect-ratio: 1/1; transition: 300ms;" id="{{image.id}}" />
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const imagesDiv = document.getElementById('imagesDiv');
+        const images = document.querySelectorAll('#imagesDiv img');
+        const form = document.querySelector('form')
+        const formBtn = document.querySelector('form button')
+
+        let imgArr = []
+
+        for (image of images)
+        {
+            image.addEventListener('click', e => {
+                console.log(e.target.id)
+                if (imgArr.includes(e.target.id)) 
+                {
+                    imgArr = imgArr.filter(id => id != e.target.id)
+                    e.target.classList.remove('border')
+                }
+                else 
+                {
+                    imgArr.push(e.target.id)
+                    e.target.classList.add('border')
+                }
+            })
+        }
+
+        formBtn.addEventListener('click', e => {
+            e.preventDefault()
+            if (imgArr.length)
+             {
+                const deleteImgInput = document.createElement('input')
+                deleteImgInput.type = 'hidden'
+                deleteImgInput.name = 'deleted_images'
+                deleteImgInput.value = imgArr
+                form.appendChild(deleteImgInput)
+             }
+
+             form.submit()
+
+        })
+    </script>
+{% endblock %}

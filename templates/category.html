@@ -8,12 +8,13 @@
     <div class="d-flex gap-4 flex-wrap my-5">
         {% for listing in listings %}
         <div class="card" style="width: 19.1rem;">
-            <img src="{% if listing.images.first %} {{listing.images.first.url.url}} {% else %} https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREabvR30BJaXiYN2Azwc8fPUWJmv1nzMatw9YIxxrygA&s {% endif %}" class="card-img-top object-fit-cover" style="aspect-ratio: 1 / 1 ;" alt="{{listing.title}} image">
+            <img src="{% if listing.images.first %} {{listing.images.first.url.url}} {% else %} https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg {% endif %}" class="card-img-top object-fit-cover" style="aspect-ratio: 1 / 1 ;" alt="{{listing.title}} image">
             <div class="card-body">
               <h5 class="card-title">{{ listing.title|truncatechars:26 }}</h5>
-              <p class="card-text">${{ listing.price|floatformat:2 }}</p>
-                <a href="#" class="btn btn-primary">View listing</a>
-                <a href="#" class="btn btn-outline-primary">Message</a>
+              <p class="card-text">${{ listing.price|floatformat:2 }} {% if listing.is_sold %} <span class="text-secondary">(Sold)</span> {% endif %}</p>
+                <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View listing</a>
+                {% if not listing.is_sold %} <a href="{% url 'message-buy' listing.id %}" class="btn btn-outline-primary">Message</a> {% endif %}
+                
             </div>
           </div>
         {% endfor %}

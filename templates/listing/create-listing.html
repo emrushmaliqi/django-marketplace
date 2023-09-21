@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block title %} Marketplace | Create listing {% endblock %}
+
+{% block content %} 
+<form action="{% url 'create-listing' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <div class="form-group mb-3">
+        <label for="images">Images:</label>
+        <input type="file" id="images" name="images" multiple class="form-control" />
+    </div>
+    <button class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

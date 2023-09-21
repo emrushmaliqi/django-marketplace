@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
+from listings import views as listings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls')),
-    path('', include('listings.urls'))
+    path('', include('listings.urls')),
+    path('profile/<int:id>', listings.profile, name='profile'),
+    path('messages/', include('messaging.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
